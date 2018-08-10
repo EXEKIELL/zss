@@ -9,21 +9,225 @@
     <title>七夕不谈假恋爱</title>
     <link rel="stylesheet" href="css/reset.css" />
     <link rel="stylesheet" href="css/animate.min.css">
+    <link rel="stylesheet" href="css/index.css">
     <script src="js/rem.js"></script>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
 <div id="app">
-    <div class="p11"></div>
+    <div class="p0" v-if="show == 0">
+        <div>请横屏观看</div>
+    </div>
+    <div class="p1" v-if="show == 1">
+        <div class="title">
+            <img class="" src="img/loading01.png" alt="">
+        </div>
+        <div class="load clearfloat">
+            <div class="people floatr">
+                <div class="man">
+                    <img v-if="manRun" src="img/man01.png" alt="">
+                    <img v-else src="img/man02.png" alt="">
+                </div>
+                <div class="women">
+                    <img src="img/women.png" alt="">
+                </div>
+            </div>
+            <div class="loading floatl">
+                <img src="img/load01.png" alt="">
+                <div class="loadWrap">
+                    <img id="load02" src="img/load02.png" alt="">
+                </div>
+            </div>
+            <!--<input style="position: absolute; top: 50%;" type="text">-->
+        </div>
+    </div>
+    <div class="p2" v-if="show == 2">
+        <div class="title">
+            <img class="" src="img/loading01.png" alt="">
+        </div>
+    </div>
+    <div class="p3" v-if="show == 3">
+        <img src="img/bj03.png" alt="">
+    </div>
+    <div class="p4" v-if="show == 4">
+        <img src="img/bj04.png" alt="">
+    </div>
+    <div class="p5" v-if="show == 5">
+        <img src="img/bj05.png" alt="">
+    </div>
+    <div class="p6" v-if="show == 6">
+        <img src="img/bj06.png" alt="">
+    </div>
+    <!--定位-->
+    <div class="p7" v-if="show == 7">
+        <img src="img/bj07.png" alt="">
+        <div class="search">
+            <img src="img/search01.png" alt="">
+        </div>
+        <div class="text">
+            <img src="img/text01.png" alt="">
+        </div>
+        <div class="button1" @click="queding">
+            <img src="img/button01.png" alt="">
+        </div>
+        <div class="button2">
+            <img src="img/button02.png" alt="">
+        </div>
+    </div>
+    <!--选择海报-->
+    <div class="p8" v-if="show == 8">
+        <div class="wrap">
+            <div class="sels">
+                <div class="sel1" :class="{selIt:selIdx == index}" v-for="(item,index) in 4" :key="index">
+                    <img :src="'img/sel0'+(index+1)+'.png'" alt="">
+                    <div class="mask" @click="mask(index)"></div>
+                </div>
+
+            </div>
+            <div class="bottom">
+                <img src="img/p8_text.png" alt="">
+                <div class="year"></div>
+                <div class="month"></div>
+                <div class="day"></div>
+            </div>
+            <div class="button">
+                <img src="img/button01.png" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="p11" v-if="show == 11">1132</div>
+    <div class="popUp" v-if="popUp">
+        <div class="wrap">
+            <div>
+                <img class="animated fadeInRight" src="img/selectWrap01.png" alt="">
+                <div class="yes" @click="sel(1)">
+                    <img class="animated bounceIn" src="img/selectWrap01_btn01.png" alt="">
+                </div>
+                <div class="no" @click="sel(0)">
+                    <img class="animated bounceIn" src="img/selectWrap01_btn02.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="js/vue.js"></script>
+<script src="js/anima.js"></script>
+<script src="js/loding.js"></script>
 <script>
     var App = new Vue({
         el:'#app',
         data:{
+            show:8,
+            manRun:true,
+            popUp:false,
+            selData:[],
+            // 场景选择
+            selIdx:0
+        },
+        methods:{
+          sel:function (i) {
+              if(i == 1){
+                  // yes
+                  if(this.show == 3){
+                      this.selData.push(1);
+                      this.show = 4;
+                  }else if(this.show == 4){
+                      this.selData.push(1);
+                      this.show = 5;
+                  }
+              }else if(i == 0){
+                  // no
+                  if(this.show == 3){
+                      this.selData.push(0);
+                      this.show = 4;
+                  }else if(this.show == 4){
+                      this.selData.push(1);
+                      this.show = 5;
+                  }
+              }
+              this.popUp = false;
+          },
+            queding:function () {
+                this.show = 8
+            },
+            mask:function (i) {
+                this.selIdx = i;
+            }
+        },
+        watch:{
+          show:function (i) {
+              console.log(i);
+              var that = this;
+              if(i == 2){
+                  var t = 6000;
+                  setTimeout(function () {
+                    that.show = 3;
+                  },t)
+              }else if(i == 3){
+                  var t = 3000;
+                  setTimeout(function () {
+                      that.popUp = true;
+                  },t)
+              }
+          }
+        },
+        mounted:function () {
+            if(this.show == 1){
+                man(this);
+                load(imgList,this);
+            }
 
         }
-    })
+    });
+    // // 转屏时触发
+    // window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", function() {
+    //     if (window.orientation === 180 || window.orientation === 0) {
+    //         // 竖屏状态！
+    //         App.show = 0;
+    //         location.reload();
+    //     }
+    //     if (window.orientation === 90 || window.orientation === -90 ){
+    //         // 横屏状态!
+    //         App.show = 1;
+    //         var width = document.documentElement.clientWidth;
+    //         var height =  document.documentElement.clientHeight;
+    //         if( width < height ){
+    //             console.log(width + " " + height);
+    //             $print =  $('#app');
+    //             $print.width(height);
+    //             $print.height(width);
+    //             $print.css('top',  (height-width)/2 );
+    //             $print.css('left',  0-(height-width)/2 );
+    //             $print.css('transform' , 'rotate(90deg)');
+    //             $print.css('transform-origin' , '50% 50%');
+    //         }
+    //         location.reload();
+    //     }
+    // }, false);
+    //
+    // function orient() {
+    //     if (window.orientation == 0 || window.orientation == 180) {
+    //         // alert("竖屏 ");
+    //         App.show = 0;
+    //         //可针对横竖屏改变用js动态改变css样式
+    //         return false;
+    //     }
+    //     else if (window.orientation == 90 || window.orientation == -90) {
+    //         // alert("横屏 ");
+    //         var width = document.documentElement.clientWidth;
+    //         var height =  document.documentElement.clientHeight;
+    //         console.log(width,height)
+    //         $print =  $('#app');
+    //         $print.width(height);
+    //         $print.height(width);
+    //         $print.css('top',  (height-width)/2 );
+    //         $print.css('left',  0-(height-width)/2 );
+    //         $print.css('transform' , 'rotate(-90deg)');
+    //         $print.css('transform-origin' , '50% 50%');
+    //         return false;
+    //     }
+    // }
+    // orient();
 </script>
 </body>
 </html>
